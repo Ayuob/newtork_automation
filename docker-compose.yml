@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  router:
+    image: alpine:latest
+    networks:
+      - mynetwork
+    # Add additional configurations for the router service
+
+  server:
+    image: alpine:latest
+    networks:
+      - mynetwork
+    # Add additional configurations for the server service
+
+  management:
+    build:
+      context: ./management
+    networks:
+      - mynetwork
+    volumes:
+      - ./project:/app
+    # Add additional configurations for the management service
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -1,0 +1,5 @@
+192.168.31.212, interface GigabitEthernet0/1, description "Connected to Server"
+192.168.31.212, ip address 192.168.0.10 255.255.255.0
+192.168.31.212, router ospf 1, network 192.168.0.0 0.0.0.255 area 0
+192.168.31.70, vlan 10, name "Sales"
+192.168.31.70, ip address 192.168.10.1 255.255.255.0
