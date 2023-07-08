@@ -1,11 +1,12 @@
 import os
 import subprocess
+import paramiko
+import logging
+
+# Enable debugging output
+paramiko.util.log_to_file('paramiko.log', level=logging.DEBUG)
 
 
-# def check_reachability(ip_address):
-#     # Use subprocess to ping the IP address and check its reachability
-#     result = subprocess.run(['ping', '-c', '4', ip_address], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-#     return result.returncode == 0
 def check_reachability(ip_address):
     command = ['ping', '-n', '4', ip_address]  # Use -n flag for Windows
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -35,13 +36,13 @@ def read_commands_file(file_path):
             commands[ip_address] = cmds
     return commands
 
-# def apply_commands(device_name, ip_address, username, password, commands):
-#     # Implement the logic to connect to the device and apply the commands
-#     # This can be done using the network automation framework of your choice (e.g., Netmiko, Napalm, etc.)
-#     print(f"Applying commands on device: {device_name} ({ip_address})")
-#     print(f"Commands: {commands}\n")
-
-import paramiko
+def read_commands_from_file(filename):
+    commands = []
+    with open(filename, 'r') as file:
+        for line in file:
+            device_ip, command = line.strip().split(',', 1)
+            commands.append((device_ip.strip(), command.strip()))
+    return commands
 
 def apply_commands(device_name, ip_address, username, password, commands):
     try:
@@ -56,8 +57,11 @@ def apply_commands(device_name, ip_address, username, password, commands):
         for command in commands:
             stdin, stdout, stderr = ssh_client.exec_command(command)
             output = stdout.read().decode('utf-8')
+            error = stderr.read().decode('utf-8')
+
             print(f"Command: {command}")
             print(f"Output:\n{output}\n")
+            print(f"Error:\n{error}\n")
 
         print(f"Successfully applied commands on device: {device_name} ({ip_address})")
 
@@ -67,6 +71,7 @@ def apply_commands(device_name, ip_address, username, password, commands):
     except Exception as e:
         print(f"Failed to apply commands on device: {device_name} ({ip_address})")
         print(f"Error: {str(e)}\n")
+
 
 
 def main():

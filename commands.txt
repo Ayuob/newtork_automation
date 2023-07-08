@@ -1,3 +1,1 @@
-192.168.31.15,uci set system.@system[0].hostname=router_1
- 192.168.31.15,uci commit 
-192.168.31.15,reboot
+192.168.31.15,uci set system.@system[0].hostname=my_router && uci commit && uci show system.@system[0].hostname && reboot
